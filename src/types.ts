@@ -64,10 +64,12 @@ export interface UserState{
 export interface Associate {
     firstName?: string;
     lastName?: string;
+    salesforceId?: string;
     grades?: {
         dateReceived: string,
         gradeId: number,
         score: number,
+        assessmentId?: number,
         traineeId: string
     }[];
     testScores?: {

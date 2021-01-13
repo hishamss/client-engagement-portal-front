@@ -1,9 +1,16 @@
 @import "revature-colors.scss";
 
-html body
-{
-    background-color: #EAEAEA;
-    font-family: $rev-font !important;
-    font-style: $rev-font-style;
-    font-weight: $rev-font-weight;
+html body {
+  background-color: #eaeaea;
+  font-family: $rev-font !important;
+  font-style: $rev-font-style;
+  font-weight: $rev-font-weight;
+}
+
+#batchAverageGradeChart {
+  height: 25vh;
+}
+
+#myChart {
+  height: 25vh;
 }
