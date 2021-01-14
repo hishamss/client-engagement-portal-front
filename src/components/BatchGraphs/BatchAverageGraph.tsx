@@ -1,19 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Chart from "chart.js";
 import { Batch } from "../../types";
 
 const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
+  const [chart, setChart] = useState<Chart>();
+  const [associate, setAssociate] = useState<string>();
+
   // Generate chart on component mount
   useEffect(() => {
-    createChart();
-  }, []);
-
-  // Generate random background colors for bars
-  const randomColor = () => {
-    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-  };
-
-  const createChart = () => {
     // Initialize variables needed to generate a chart
     const gradeArray: any = [];
     const goodGradeArray: Array<number | undefined> = [];
@@ -55,7 +49,7 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
     // console.log("gradeArray= ", gradeArray);
 
     // Translate new gradeObj into labels and data (average test score) for chart
-    const chartLabels: any = [];
+    const chartLabels: string[] = [];
     const chartData: any = [];
     const barColor: any = [];
 
@@ -81,9 +75,8 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
     const ctx: any = document.getElementById("myChart");
 
     // Generate chart
-    new Chart(ctx, {
+    setChart(new Chart(ctx, {
       type: "bar",
-
       data: {
         labels: chartLabels,
         datasets: [
@@ -155,10 +148,20 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
           ],
         },
       },
-    });
+    }));
+  }, [batch]);
+
+  // Generate random background colors for bars
+  const randomColor = () => {
+    return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
   };
 
-  return <canvas id="myChart"></canvas>;
+  chart && console.log(associate ? `Clicked bar for ${associate}` : 'Closed grade history');
+
+  return <>
+    {/* associate && <LineGraph batch={batch} aid={associate} /> */}
+    <canvas id="myChart" onClick={e => chart && setAssociate((chart.data.labels as string[])[(chart.getElementAtEvent(e)[0] as { _index:number })?._index])} />
+  </>;
 };
 
 export default BatchAverageGraph;
