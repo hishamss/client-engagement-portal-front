@@ -22,7 +22,6 @@ export const BatchInformation: React.FC<{ batch: Batch }> = ({ batch }) => {
             {/* Batch name header */}
             <CardHeader>
               <h4>{batch.name}</h4>
-              {console.log("Batch from BatchInformation: ", batch)}
             </CardHeader>
             <CardBody>
               {/* Core tech. label and image */}
@@ -55,7 +54,9 @@ export const BatchInformation: React.FC<{ batch: Batch }> = ({ batch }) => {
             </CardBody>
             <CardFooter />
           </Card>
-          <BatchAverageGraph batch={batch} />
+          <div>
+            <BatchAverageGraph batch={batch} />
+          </div>
           {batch.associateAssignments?.length ? (
             <>
               {/* Cards which provide detailed info. on the batch associates */}

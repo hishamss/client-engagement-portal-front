@@ -3,24 +3,30 @@ import Chart from "chart.js";
 import { Batch } from "../../types";
 
 const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
+  // Generate chart on component mount
+  useEffect(() => {
+    createChart();
+  }, []);
+
   // Generate random background colors for bars
   const randomColor = () => {
     return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
   };
 
-  useEffect(() => {
+  const createChart = () => {
+    // Initialize variables needed to generate a chart
     const gradeArray: any = [];
     const goodGradeArray: Array<number | undefined> = [];
     const passingGradeArray: Array<number | undefined> = [];
 
-    console.log("Batch Info in Graph: ", batch);
+    // console.log("Batch Info in Graph: ", batch);
 
     // Get data into an array of of associates with associate Id, first name, last name, and array of individual grades
     for (const associateAssignment of batch.associateAssignments) {
-      console.log(
-        "associate assignment grades: ",
-        associateAssignment.associate.grades
-      );
+      //   console.log(
+      //     "associate assignment grades: ",
+      //     associateAssignment.associate.grades
+      //   );
       gradeArray.push({
         salesforceId: associateAssignment.associate.salesforceId,
         firstName: associateAssignment.associate.firstName,
@@ -46,12 +52,14 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
       }
     }
 
-    console.log("gradeArray= ", gradeArray);
+    // console.log("gradeArray= ", gradeArray);
+
     // Translate new gradeObj into labels and data (average test score) for chart
     const chartLabels: any = [];
     const chartData: any = [];
     const barColor: any = [];
 
+    // Get random colors for bars and calculate average grade for each associate
     for (const associate of gradeArray) {
       chartLabels.push(associate.lastName);
       barColor.push(randomColor());
@@ -66,39 +74,24 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
       chartData.push(avgGrade);
     }
 
-    console.log("Labels: ", chartLabels);
-    console.log("Data: ", chartData);
-    console.log("Colors: ", barColor);
+    // console.log("Labels: ", chartLabels);
+    // console.log("Data: ", chartData);
+    // console.log("Colors: ", barColor);
+
     const ctx: any = document.getElementById("myChart");
 
-    const myChart = new Chart(ctx, {
+    // Generate chart
+    new Chart(ctx, {
       type: "bar",
+
       data: {
-        // labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
         labels: chartLabels,
         datasets: [
           {
-            label: "Associate Average Scores",
-            // data: [12, 19, 3, 5, 2, 3],
             data: chartData,
-            // backgroundColor: [
-            //   "rgba(255, 99, 132, 0.2)",
-            //   "rgba(54, 162, 235, 0.2)",
-            //   "rgba(255, 206, 86, 0.2)",
-            //   "rgba(75, 192, 192, 0.2)",
-            //   "rgba(153, 102, 255, 0.2)",
-            //   "rgba(255, 159, 64, 0.2)",
-            // ],
+            label: "Average Grade",
             backgroundColor: barColor,
-            // borderColor: [
-            //   "rgba(255, 99, 132, 1)",
-            //   "rgba(54, 162, 235, 1)",
-            //   "rgba(255, 206, 86, 1)",
-            //   "rgba(75, 192, 192, 1)",
-            //   "rgba(153, 102, 255, 1)",
-            //   "rgba(255, 159, 64, 1)",
-            // ],
-            // borderWidth: 1,
+            hoverBackgroundColor: barColor,
           },
           {
             label: "Good Grade",
@@ -124,9 +117,16 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
           text: "Average Assessment Scores",
         },
         layout: {
-          padding: 50,
+          padding: 5,
         },
         legend: {
+          labels: {
+            filter: function (legendItem, data) {
+              // Remove label for bar chart as it is a duplicate of the chart title
+              //   and doesn't match the multi colored bars.
+              return legendItem.text !== "Average Grade";
+            },
+          },
           display: true,
         },
         scales: {
@@ -156,7 +156,7 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
         },
       },
     });
-  });
+  };
 
   return <canvas id="myChart"></canvas>;
 };
