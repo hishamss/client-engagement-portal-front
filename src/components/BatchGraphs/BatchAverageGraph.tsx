@@ -1,12 +1,6 @@
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import Axiox from "axios";
-import { axiosInstance } from "../../util/axiosConfig";
-import Axios from "axios";
 import Chart from "chart.js";
 import { Batch } from "../../types";
-
-// import { batchGrades, batchInfo } from "./BatchInfo";
 
 const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
   // Generate random background colors for bars
@@ -14,12 +8,10 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
     return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
   };
 
-  //   const batchInfo: any = useSelector((state) =>
-  //     console.log("Redux Store: ", state)
-  //   );
-
   useEffect(() => {
     const gradeArray: any = [];
+    const goodGradeArray: Array<number | undefined> = [];
+    const passingGradeArray: Array<number | undefined> = [];
 
     console.log("Batch Info in Graph: ", batch);
 
@@ -34,6 +26,11 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
         firstName: associateAssignment.associate.firstName,
         lastName: associateAssignment.associate.lastName,
       });
+      // Add "good grade" for line plot on data array - 1 data point for each associateAssignment
+      goodGradeArray.push(batch.goodGrade);
+
+      // Add "passing grade" for line plot #2 on data array = 1 data point for each associateAssignment
+      passingGradeArray.push(batch.passingGrade);
 
       if (associateAssignment.associate.grades) {
         // Get index of current associate
@@ -103,6 +100,22 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
             // ],
             // borderWidth: 1,
           },
+          {
+            label: "Good Grade",
+            fill: false,
+            borderColor: "lightgreen",
+            data: goodGradeArray,
+            pointRadius: 0,
+            type: "line",
+          },
+          {
+            label: "Passing Grade",
+            fill: false,
+            borderColor: "lightblue",
+            data: passingGradeArray,
+            pointRadius: 0,
+            type: "line",
+          },
         ],
       },
       options: {
@@ -114,7 +127,7 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
           padding: 50,
         },
         legend: {
-          display: false,
+          display: true,
         },
         scales: {
           xAxes: [
@@ -135,8 +148,8 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
               },
               ticks: {
                 beginAtZero: true,
-                stepSize: 5,
-                max: 70,
+                stepSize: 10,
+                max: 100,
               },
             },
           ],
@@ -145,11 +158,7 @@ const BatchAverageGraph: React.FC<{ batch: Batch }> = ({ batch }) => {
     });
   });
 
-  return (
-    <div id="batchAverageGradeChart">
-      <canvas id="myChart"></canvas>
-    </div>
-  );
+  return <canvas id="myChart"></canvas>;
 };
 
 export default BatchAverageGraph;
