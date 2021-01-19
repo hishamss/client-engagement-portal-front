@@ -54,7 +54,7 @@ export const BatchInformation: React.FC<{ batch: Batch }> = ({ batch }) => {
             </CardBody>
             <CardFooter />
           </Card>
-          <div>
+          <div style={{height: "50vh"}}>
             <BatchAverageGraph batch={batch} />
           </div>
           {batch.associateAssignments?.length ? (
